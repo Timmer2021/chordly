@@ -1,8 +1,8 @@
 FROM ruby:3.3-slim
 
-ENV RAILS_ENV="production" \
+# Changed to development and removed the BUNDLE_WITHOUT restriction
+ENV RAILS_ENV="development" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development:test" \
     RAILS_SERVE_STATIC_FILES="true"
 
 RUN apt-get update -qq && \
@@ -34,8 +34,7 @@ COPY . .
 
 RUN chmod +x bin/*
 
-RUN SECRET_KEY_BASE=dummy_build_key bin/rails assets:precompile
-
 RUN mkdir -p storage
 
-CMD ["bash", "-c", "bin/rails db:prepare && bin/rails server -b 0.0.0.0"]
+# Added db:seed to create the default users for the toolbar
+CMD ["bash", "-c", "bin/rails db:prepare && bin/rails db:seed && bin/rails server -b 0.0.0.0"]
