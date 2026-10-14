@@ -24,8 +24,9 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock ./
 COPY package.json yarn.lock ./
 
-# Strip out the hardcoded ruby version from Gemfile to prevent Exit Code 18
+# Delete the lockfile so dependencies are resolved fresh for your NAS
 RUN sed -i '/^ruby/d' Gemfile && \
+    rm -f Gemfile.lock && \
     bundle install && \
     yarn install
 
