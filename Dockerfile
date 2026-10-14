@@ -24,8 +24,9 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock ./
 COPY package.json yarn.lock ./
 
-# Without the strict deployment flag, this will successfully adapt to your NAS
-RUN bundle install && \
+# Strip out the hardcoded ruby version from Gemfile to prevent Exit Code 18
+RUN sed -i '/^ruby/d' Gemfile && \
+    bundle install && \
     yarn install
 
 COPY . .
